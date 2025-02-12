@@ -29,6 +29,7 @@ class CivVContext(CommonContext):
     current_location_index = 0
     item_offset = 140319
     logger = logger
+    loc_list = []
     locatiions_to_send = []
 
     def __init__(self, server_address, password):
@@ -105,19 +106,19 @@ async def handle_recieve_items(ctx: CivVContext, sock: socket.socket, loop: asyn
 
 async def handle_checked_location(ctx: CivVContext, sock: socket.socket, loop: asyncio.AbstractEventLoop):
     result : str
-    loc_list = []
     result = await ctx.tuner.send_command("GetItemsToSend()", sock, loop)
     result_list = result.split(",")
-    for location in range(0, len(result_list)):
-        if result_list[location] == '0' or result_list[location] == '':
+    for index in range(0, len(result_list)):
+        location = result_list[index]
+        if location == '0' or location == '':
             continue
-        elif location in loc_list:
+        elif location in ctx.loc_list:
             continue
         else:
-            loc_list.append(location)
-    for index in range(0, len(loc_list)):
+            ctx.loc_list.append(location)
+    for index in range(0, len(ctx.loc_list)):
         if index >= ctx.current_location_index:
-            loc = int(loc_list[index])
+            loc = int(ctx.loc_list[index])
             ctx.locatiions_to_send.append(loc + ctx.item_offset)
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": ctx.locatiions_to_send}])
             ctx.current_location_index += 1

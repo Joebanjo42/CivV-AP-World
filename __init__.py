@@ -55,7 +55,7 @@ class CivVWorld(World):
     
     def create_items(self) -> None:
         item_pool: List[CivVItem] = []
-        item_pool.append(self.create_item("Pottery"))
+        # item_pool.append(self.create_item("Pottery"))
         for name, item in item_table.items():
             item_pool.append(self.create_item(name))
         self.multiworld.itempool += item_pool
@@ -65,7 +65,7 @@ class CivVWorld(World):
         self.multiworld.regions.append(menu_reigion)
 
         main_region = Region("Main", self.player, self.multiworld)
-        main_region.add_locations({"Pottery": 140320}, CivVLocation)
+        # main_region.add_locations({"AP1": 140319}, CivVLocation)
         for location, id in location_table_data.items():
             main_region.add_locations({location : id +  offset}, CivVLocation)
         self.multiworld.regions.append(main_region)
