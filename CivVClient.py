@@ -78,7 +78,7 @@ async def firetuner_task(ctx: CivVContext):
                     await asyncio.sleep(3)
                     await handle_checked_location(ctx, sock, loop)
                     await asyncio.sleep(3)
-                    # await handle_goal_complete(ctx)
+                    await handle_goal_complete(ctx, sock, loop)
         cont = False
         sock.close()
 
@@ -123,8 +123,10 @@ async def handle_checked_location(ctx: CivVContext, sock: socket.socket, loop: a
             ctx.current_location_index += 1
 
 
-async def handle_goal_complete(ctx: CivVContext):
-    logger.info("Handle Goal Called")
+async def handle_goal_complete(ctx: CivVContext, sock: socket.socket, loop: asyncio.AbstractEventLoop):
+    goal_complete = await ctx.tuner.send_command("IsVictory()", sock, loop)
+    if goal_complete == "True":
+        await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
 def main(connect=None, password=None, name=None):
     Utils.init_logging("Civiliazation V Client")
