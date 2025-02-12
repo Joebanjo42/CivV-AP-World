@@ -91,11 +91,8 @@ async def handle_recieve_items(ctx: CivVContext, sock: socket.socket, loop: asyn
         for index, network_item in enumerate(ctx.items_received):
 
             if index >= ctx.current_index:
-                # logger.info(ctx.items_received[0])
-                # logger.info(f"Item: {ctx.current_index}")
                 current_item = ctx.items_received[ctx.current_index]
                 await ctx.tuner.send_command(f"AddTech({current_item[0] - ctx.item_offset + 81})", sock, loop)
-                # await ctx.tuner.send_command("AddGold()", sock, loop)
                 await asyncio.sleep(0.02)
                 ctx.current_index += 1
             await asyncio.sleep(0.02)
@@ -112,16 +109,22 @@ async def handle_checked_location(ctx: CivVContext, sock: socket.socket, loop: a
         location = result_list[index]
         if location == '0' or location == '':
             continue
+        elif location == 'True' or location == 'False':
+            continue
         elif location in ctx.loc_list:
             continue
         else:
             ctx.loc_list.append(location)
+
     for index in range(0, len(ctx.loc_list)):
         if index >= ctx.current_location_index:
             loc = int(ctx.loc_list[index])
+            if loc == False:
+                loc = 1
             ctx.locatiions_to_send.append(loc + ctx.item_offset)
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": ctx.locatiions_to_send}])
             ctx.current_location_index += 1
+    
 
 
 async def handle_goal_complete(ctx: CivVContext, sock: socket.socket, loop: asyncio.AbstractEventLoop):

@@ -11,12 +11,6 @@ from worlds.AutoWorld import World
 from BaseClasses import Region, Location, Entrance, Item, ItemClassification
 from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
 
-# class MyGameSettings(settings.Group):
-#     class RomFile(settings.SNESRomPath):
-#         """Insert help text for host.yaml here."""
-
-#     rom_file: RomFile = RomFile("CivilizationV.sfc")
-
 base_id = 1
 offset = 140319
 
@@ -55,7 +49,6 @@ class CivVWorld(World):
     
     def create_items(self) -> None:
         item_pool: List[CivVItem] = []
-        # item_pool.append(self.create_item("Pottery"))
         for name, item in item_table.items():
             item_pool.append(self.create_item(name))
         self.multiworld.itempool += item_pool
@@ -65,7 +58,6 @@ class CivVWorld(World):
         self.multiworld.regions.append(menu_reigion)
 
         main_region = Region("Main", self.player, self.multiworld)
-        # main_region.add_locations({"AP1": 140319}, CivVLocation)
         for location, id in location_table_data.items():
             main_region.add_locations({location : id +  offset}, CivVLocation)
         self.multiworld.regions.append(main_region)
