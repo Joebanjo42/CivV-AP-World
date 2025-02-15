@@ -11,12 +11,6 @@ from worlds.AutoWorld import World
 from BaseClasses import Region, Location, Entrance, Item, ItemClassification
 from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
 
-# class MyGameSettings(settings.Group):
-#     class RomFile(settings.SNESRomPath):
-#         """Insert help text for host.yaml here."""
-
-#     rom_file: RomFile = RomFile("CivilizationV.sfc")
-
 base_id = 1
 offset = 140319
 
@@ -55,20 +49,59 @@ class CivVWorld(World):
     
     def create_items(self) -> None:
         item_pool: List[CivVItem] = []
-        # item_pool.append(self.create_item("Pottery"))
         for name, item in item_table.items():
             item_pool.append(self.create_item(name))
         self.multiworld.itempool += item_pool
     
     def create_regions(self) -> None:
         menu_reigion = Region("Menu", self.player, self.multiworld)
+        ancient_region = Region("Ancient", self.player, self.multiworld)
+        classical_region = Region("Classical", self.player, self.multiworld)
+        medieval_region = Region("Medieval", self.player, self.multiworld)
+        renaissance_region = Region("Renaissance", self.player, self.multiworld)
+        industrial_region = Region("Industrial", self.player, self.multiworld)
+        modern_region = Region("Modern", self.player, self.multiworld)
+        postmodern_region = Region("Postmodern", self.player, self.multiworld)
+        future_region = Region("Future", self.player, self.multiworld)
+
+        # for location, era in enumerate({location : era})
+
         self.multiworld.regions.append(menu_reigion)
 
         main_region = Region("Main", self.player, self.multiworld)
-        # main_region.add_locations({"AP1": 140319}, CivVLocation)
         for location, id in location_table_data.items():
-            main_region.add_locations({location : id +  offset}, CivVLocation)
-        self.multiworld.regions.append(main_region)
+            if id[1] == 1:
+                ancient_region.addlocations({location : id + offset}, CivVLocation)
+            if id[1] == 2:
+                classical_region.addlocations({location : id + offset}, CivVLocation)
+            if id[1] == 3:
+                medieval_region.addlocations({location : id + offset}, CivVLocation)
+            if id[1] == 4:
+                renaissance_region.addlocations({location : id + offset}, CivVLocation)
+            if id[1] == 5:
+                industrial_region.addlocations({location : id + offset}, CivVLocation)
+            if id[1] == 6:
+                modern_region.addlocations({location : id + offset}, CivVLocation)
+            if id[1] == 7:
+                postmodern_region.addlocations({location : id + offset}, CivVLocation)
+            if id[1] == 8:
+                future_region.addlocations({location : id + offset}, CivVLocation)
+        self.multiworld.regions.append(ancient_region)
+        self.multiworld.regions.append(classical_region)
+        self.multiworld.regions.append(medieval_region)
+        self.multiworld.regions.append(renaissance_region)
+        self.multiworld.regions.append(industrial_region)
+        self.multiworld.regions.append(modern_region)
+        self.multiworld.regions.append(postmodern_region)
+        self.multiworld.regions.append(future_region)
 
-        menu_reigion.connect(main_region)
+
+        menu_reigion.connect(ancient_region)
+        ancient_region.connect(classical_region)
+        classical_region.connect(medieval_region)
+        medieval_region.connect(renaissance_region)
+        renaissance_region.connect(industrial_region)
+        industrial_region.connect(modern_region)
+        modern_region.connect(postmodern_region)
+        postmodern_region.connect(future_region)
         return
